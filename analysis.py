@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier as dtc
 from sklearn.cross_validation import cross_val_score
 from sklearn.cross_validation import train_test_split
+from sklearn.svm import SVC
 
 # Load the entire data set as input
 inpFile = open("data/training_data.txt", "r")
@@ -36,7 +37,7 @@ for i in len(data):
 	training_data.append()
 '''
 
-
+'''
 # Create leaf sizes to iterate over
 leaf = []
 for i in range(1, 26):
@@ -47,13 +48,6 @@ depths = []
 for i in range(2, 21):
 	depths.append(i)
 
-'''
-tree = dtc(min_samples_leaf=10)
-
-tree.fit(X, Y)
-vals = tree.predict(test)
-'''
-
 leaf_errors = []
 depth_errors = []
 
@@ -63,11 +57,12 @@ for size in leaf:
 	tree.fit(X, Y)
 	scores = cross_val_score(tree, X, Y)
 	leaf_errors.append((scores.mean(), size))
-	print scores.mean()
 
-print "Max lead score: ", max(leaf_errors)
+print "Max leaf score: ", max(leaf_errors)
+'''
 
 # Default is Gini in DTC classifier
+'''
 for depth in depths:
 	tree = dtc(max_depth=depth)
 	tree.fit(X, Y)
@@ -75,18 +70,31 @@ for depth in depths:
 	depth_errors.append((scores.mean(), size))
 
 print "Max depth score: ", max(depth_errors)
-
+'''
+# New Best VSM of 0.90024 is C = 0.0001, coef0=1, kernel='linear'
 
 '''
-output = open("submissions/results.txt", "w")
+tree = dtc(min_samples_leaf=2)
+
+tree.fit(X, Y)
+vals = tree.predict(test)
+'''
+
+svr = SVC(C=0.1, kernel='linear', coef0=1)
+model = svr.fit(X, Y)
+scores = cross_val_score(model, X, Y)
+print scores.mean()
+'''
+vals = model.predict(test)
+
+output = open("submissions/results_svm_1.txt", "w")
 output.write("Id,Prediction" + "\n")
 for i in range(1, len(vals) + 1):
 	output.write(str(i) + "," + str(int(vals[i - 1])) + "\n")
-'''
 
 inpFile.close()
-#output.close()
-
+output.close()
+'''
 
 
 
