@@ -18,6 +18,15 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier as DTC
 from sklearn.metrics import accuracy_score
 
+# Create formatted submission file
+def create_submission(filename, vals):
+    output = open("submissions/" + filename, "w")
+    output.write("Id,Prediction" + "\n")
+    for i in range(1, len(vals) + 1):
+	output.write(str(i) + "," + str(int(vals[i - 1])) + "\n")
+
+    output.close()
+
 # Load the entire data set as input
 inpFile = open("data/training_data.txt", "r")
 
@@ -36,13 +45,13 @@ dtc_min_samples_leaf = DTC(min_samples_leaf=15)
 etc = ETC()
 gbc = GBC()
 rfc = RFC()
-dtc_max_depth = dtc(max_depth=8)
+dtc_max_depth = DTC(max_depth=8)
 nb  = BernoulliNB()
 svc = SVC()
 
 # Split Training Data
 X_train, X_test, Y_train, Y_test = train_test_split(
-    X, Y, test_size=0.5)
+    X, Y, test_size=0.3333)
 
 # Compare individual classifiers
 dtc_min_samples_leaf.fit(X_train, Y_train)
@@ -109,9 +118,9 @@ print accuracy_score(ETC().fit(combined_predictions_train, Y_train).predict(comb
 print accuracy_score(VTC(
     estimators=[
         ('1', dtc_min_samples_leaf),
-        ('2', dtc_max_depth),
-        ('3', naive_bayes_bernoulli),
-        ('4', svc)
+        ('2', etc),
+        ('3', gbc),
+        ('4', rfc)
     ],
     voting='soft'
 ).fit(combined_predictions_train, Y_train).predict(combined_predictions), Y_test)
@@ -154,14 +163,6 @@ vote_predictions = \
 output = GBC().fit(X, Y).predict(test_data)
 '''
 
-def create_submission(filename, vals):
-    output = open("submissions/" + filename, "w")
-    output.write("Id,Prediction" + "\n")
-    for i in range(1, len(vals) + 1):
-	output.write(str(i) + "," + str(int(vals[i - 1])) + "\n")
-
-    output.close()
-
-create_submission('results_GBC.txt', output)
+# create_submission('results_GBC.txt', output)
 
 inpFile.close()
