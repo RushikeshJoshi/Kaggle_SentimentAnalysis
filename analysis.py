@@ -45,17 +45,7 @@ for i in range(len(X)):
 		term_freq = 0.5 + 0.5*(X[i] / max_freq)
 	X[i] = term_freq * inv_doc_freq
 
-
-'''
-for i in len(data):
-	counts = data[i]
-	tmp_lst = []
-	label = 0
-	for j in range(len(counts) - 1):
-		tmp_list += counts[j] * [words[j]]
-	training_data.append()
-'''
-
+# Testing with Decision Tree Classifier
 '''
 # Create leaf sizes to iterate over
 leaf = []
@@ -90,8 +80,8 @@ for depth in depths:
 
 print "Max depth score: ", max(depth_errors)
 '''
-# New Best VSM of 0.90024 is C = 0.0001, coef0=1, kernel='linear'
 
+# Generate results for Decision Tree Classifier
 '''
 tree = dtc(min_samples_leaf=2)
 
@@ -99,10 +89,15 @@ tree.fit(X, Y)
 vals = tree.predict(test)
 '''
 
+# SVM trial
+'''
 svr = SVC(C=0.1, kernel='linear', coef0=1)
 model = svr.fit(X, Y)
 scores = cross_val_score(model, X, Y)
 print scores.mean()
+'''
+
+# Print out data
 '''
 vals = model.predict(test)
 
