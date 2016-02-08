@@ -7,6 +7,7 @@ Kaggle Mini-Project: Sentiment Analysis
 '''
 
 import numpy as np
+import math
 from sklearn.tree import DecisionTreeClassifier as dtc
 from sklearn.cross_validation import cross_val_score
 from sklearn.cross_validation import train_test_split
@@ -25,7 +26,25 @@ test = np.genfromtxt("data/testing_data.txt", delimiter="|", skip_header=1)
 X = training[:, :1000]
 Y = training[:, 1000]
 
-training_data = []
+N = len(training)
+
+inv_doc_freq = np.zeros(1000)
+for i in range(len(inv_doc_freq)):
+	total = sum(X[:, i])
+	if total == 0:
+		inv_doc_freq[i] = 0
+	else:
+		inv_doc_freq[i] = math.log(N / sum(X[:, i]))
+
+# Data normalization
+for i in range(len(X)):
+	max_freq = max(X[i])
+	if max_freq == 0:
+		term_freq = X[i]
+	else:
+		term_freq = 0.5 + 0.5*(X[i] / max_freq)
+	X[i] = term_freq * inv_doc_freq
+
 
 '''
 for i in len(data):
